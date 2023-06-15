@@ -161,9 +161,8 @@ for identifier in ['DOMAIN', 'LINKEDIN', 'TWITTER', 'FACEBOOK', 'CRUNCHBASE']:
 
 # ### CrunchBase
 
-
-crunchbase_organizations_df = cursor.execute('SELECT CRUNCHBASE_ORGANIZATION_UUID, ORGANIZATION_CITY, FACEBOOK_URL, DOMAIN, TWITTER_URL, FUNDING_ROUND_TYPE, FOUNDED_ON, EMPLOYEE_COUNT, CRUNCHBASE_GROUPS, ORGANIZATION_STATE_CODE, ORGANIZATION_NAME, LINKEDIN_URL, ORGANIZATION_COUNTRY_CODE, CRUNCHBASE_URL FROM L2_NEW.CRUNCHBASE_ORGANIZATIONS WHERE DOMAIN IS NOT NULL OR TWITTER_URL IS NOT NULL OR FACEBOOK_URL IS NOT NULL OR LINKEDIN_URL IS NOT NULL OR CRUNCHBASE_URL IS NOT NULL').fetch_pandas_all()
-crunchbase_organizations_df.rename(columns={
+bnzz = cursor.execute('SELECT CRUNCHBASE_ORGANIZATION_UUID, ORGANIZATION_CITY, FACEBOOK_URL, DOMAIN, TWITTER_URL, FUNDING_ROUND_TYPE, FOUNDED_ON, EMPLOYEE_COUNT, CRUNCHBASE_GROUPS, ORGANIZATION_STATE_CODE, ORGANIZATION_NAME, LINKEDIN_URL, ORGANIZATION_COUNTRY_CODE, CRUNCHBASE_URL FROM L2_NEW.CRUNCHBASE_ORGANIZATIONS WHERE DOMAIN IS NOT NULL OR TWITTER_URL IS NOT NULL OR FACEBOOK_URL IS NOT NULL OR LINKEDIN_URL IS NOT NULL OR CRUNCHBASE_URL IS NOT NULL').fetch_pandas_all()
+bnzz.rename(columns={
     'CRUNCHBASE_ORGANIZATION_UUID': 'SOURCE_ID', 
     'TWITTER_URL': 'TWITTER', 
     'FACEBOOK_URL': 'FACEBOOK',
@@ -177,17 +176,17 @@ crunchbase_organizations_df.rename(columns={
     'LINKEDIN_URL': 'LINKEDIN'
 }, inplace=True)
 
-crunchbase_organizations_df.replace({None: ''}, inplace=True)
+bnzz.replace({None: ''}, inplace=True)
 
-crunchbase_organizations_df['LINKEDIN'] = crunchbase_organizations_df['LINKEDIN'].apply(lambda x: (str(urlparse(x.replace('[', '').replace(']', '')).netloc or '') + str(urlparse(x.replace('[', '').replace(']', '')).path or '')).lstrip('www.'))
-crunchbase_organizations_df['TWITTER'] = crunchbase_organizations_df['TWITTER'].apply(lambda x: (str(urlparse(x).netloc or '') + str(urlparse(x).path or '')).lstrip('www.'))
-crunchbase_organizations_df['FACEBOOK'] = crunchbase_organizations_df['FACEBOOK'].apply(lambda x: (str(urlparse(x).netloc or '') + str(urlparse(x).path or '')).lstrip('www.'))
-crunchbase_organizations_df['CRUNCHBASE'] = crunchbase_organizations_df['CRUNCHBASE'].apply(lambda x: (str(urlparse(x).netloc or '') + str(urlparse(x).path or '')).lstrip('www.'))
+bnzz['LINKEDIN'] = bnzz['LINKEDIN'].apply(lambda x: (str(urlparse(x.replace('[', '').replace(']', '')).netloc or '') + str(urlparse(x.replace('[', '').replace(']', '')).path or '')).lstrip('www.'))
+bnzz['TWITTER'] = bnzz['TWITTER'].apply(lambda x: (str(urlparse(x).netloc or '') + str(urlparse(x).path or '')).lstrip('www.'))
+bnzz['FACEBOOK'] = bnzz['FACEBOOK'].apply(lambda x: (str(urlparse(x).netloc or '') + str(urlparse(x).path or '')).lstrip('www.'))
+bnzz['CRUNCHBASE'] = bnzz['CRUNCHBASE'].apply(lambda x: (str(urlparse(x).netloc or '') + str(urlparse(x).path or '')).lstrip('www.'))
 
-crunchbase_organizations_df.replace(r'^\s*$', np.nan, regex=True, inplace=True)
-display(crunchbase_organizations_df.head())
+bnzz.replace(r'^\s*$', np.nan, regex=True, inplace=True)
+display(bnzz.head())
 
-crunchbase_organizations_df_website = np.array_split(crunchbase_organizations_df[crunchbase_organizations_df['DOMAIN'].isna() == False][['DOMAIN']].rename(columns={'DOMAIN': 'URL'}).to_dict('records'), BATCHES)
+crunchbase_organizations_df_website = np.array_split(bnzz[bnzz['DOMAIN'].isna() == False][['DOMAIN']].rename(columns={'DOMAIN': 'URL'}).to_dict('records'), BATCHES)
 for chunk_df in crunchbase_organizations_df_website:
     merge_nodes(
         graph.auto(),
@@ -195,39 +194,24 @@ for chunk_df in crunchbase_organizations_df_website:
         (("URLIdentifier", "DomainURL"), "URL"),
     )
 
-crunchbase_organizations_df_linkedin = np.array_split(crunchbase_organizations_df[crunchbase_organizations_df['LINKEDIN'].isna() == False][['LINKEDIN']].rename(columns={'LINKEDIN': 'URL'}).to_dict('records'), BATCHES)
+crunchbase_organizations_df_linkedin = np.array_split(bnzz[bnzz['LINKEDIN'].isna() == False][['LINKEDIN']].rename(columns={'LINKEDIN': 'URL'}).to_dict('records'), BATCHES)
 for chunk_df in crunchbase_organizations_df_linkedin:
     merge_nodes(
         graph.auto(),
         chunk_df,
         (("URLIdentifier", "LinkedInURL"), "URL"),
     )
-    
-crunchbase_organizations_df_twitter = np.array_split(crunchbase_organizations_df[crunchbase_organizations_df['TWITTER'].isna() == False][['TWITTER']].rename(columns={'TWITTER': 'URL'}).to_dict('records'), BATCHES)
-for chunk_df in crunchbase_organizations_df_twitter:
-    merge_nodes(
-        graph.auto(),
-        chunk_df,
-        (("URLIdentifier", "TwitterURL"), "URL"),
-    )
 
-crunchbase_organizations_df_facebook =  np.array_split(crunchbase_organizations_df[crunchbase_organizations_df['FACEBOOK'].isna() == False][['FACEBOOK']].rename(columns={'FACEBOOK': 'URL'}).to_dict('records'), BATCHES)
-for chunk_df in crunchbase_organizations_df_facebook:
-    merge_nodes(
-        graph.auto(),
-        chunk_df,
-        (("URLIdentifier", "FacebookURL"), "URL"),
-    )
 
-crunchbase_organizations_df_crunchbase =  np.array_split(crunchbase_organizations_df[crunchbase_organizations_df['CRUNCHBASE'].isna() == False][['CRUNCHBASE']].rename(columns={'CRUNCHBASE': 'URL'}).to_dict('records'), BATCHES)
-for chunk_df in crunchbase_organizations_df_crunchbase:
+cb_org_df =  np.array_split(bnzz[bnzz['CRUNCHBASE'].isna() == False][['CRUNCHBASE']].rename(columns={'CRUNCHBASE': 'URL'}).to_dict('records'), BATCHES)
+for chunk_df in cb_org_df:
     merge_nodes(
         graph.auto(),
         chunk_df,
         (("URLIdentifier", "CrunchbaseURL"), "URL"),
     )
 
-crunchbase_organizations = np.array_split([{k:v for k, v in x.items() if v == v} for x in crunchbase_organizations_df.to_dict('records')], BATCHES)
+crunchbase_organizations = np.array_split([{k:v for k, v in x.items() if v == v} for x in bnzz.to_dict('records')], BATCHES)
 for chunk_df in crunchbase_organizations:
     merge_nodes(
         graph.auto(),
@@ -235,10 +219,9 @@ for chunk_df in crunchbase_organizations:
         (("Company", "CrunchbaseCompany"), "SOURCE_ID"),
     )
 
-for identifier in ['DOMAIN', 'LINKEDIN', 'TWITTER', 'FACEBOOK', 'CRUNCHBASE']:
-    crunchbase_identifier_relationships = crunchbase_organizations_df.loc[crunchbase_organizations_df[identifier] != np.nan][['SOURCE_ID', identifier]]
+for identifier in ['DOMAIN', 'LINKEDIN', 'CRUNCHBASE']:
+    crunchbase_identifier_relationships = bnzz.loc[bnzz[identifier] != np.nan][['SOURCE_ID', identifier]]
     crunchbase_identifier_relationships.insert(1, 'WEIGHT', [[0.5]] * len(crunchbase_identifier_relationships))
-
     df_list = np.array_split(crunchbase_identifier_relationships, BATCHES)
     for chunk_df in df_list:
         merge_relationships(

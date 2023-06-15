@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # -- Sheet --
-
-!pip install snowflake-connector-python
-!pip install tldextract
-!pip install py2neo
-
 import requests
 import pandas as pd
 import numpy as np

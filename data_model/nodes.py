@@ -109,7 +109,6 @@ node = {
 }
 NODES.append(node)
 
-
 """
 URL nodes
 """
@@ -151,7 +150,6 @@ nodes = [
 ]
 NODES.extend(nodes)
 
-
 """
 Event nodes
 """
@@ -174,7 +172,6 @@ node = {
     "batch_size_factor": 1.0,
 }
 NODES.append(node)
-
 
 """
 Person nodes
@@ -221,7 +218,6 @@ node = {
     "batch_size_factor": 1.0,
 }
 NODES.append(node)
-
 
 node = {
     "source": "graph_cb_person",

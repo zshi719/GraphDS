@@ -1,4 +1,3 @@
-
 from etl.utils import (
     get_fields_for_source,
     get_df_from_snowflake,

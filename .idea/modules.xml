@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/data_model/.idea/data_model.iml" filepath="$PROJECT_DIR$/data_model/.idea/data_model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/etl/.idea/elt.iml" filepath="$PROJECT_DIR$/etl/.idea/elt.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/graph_python.iml" filepath="$PROJECT_DIR$/.idea/graph_python.iml" />
     </modules>
   </component>

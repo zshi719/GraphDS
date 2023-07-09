@@ -159,3 +159,4 @@ df = df.explode("INDUSTRY")
 df.drop_duplicates(inplace = True, ignore_index = True)
 df = reduce_industry_df(df, "INDUSTRY")
 save_df_to_csv(df, source=source)
+#%%

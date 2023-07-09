@@ -1,4 +1,3 @@
-
 from data_model.nodes import NODES
 from data_model.relationships import RELATIONSHIPS
 from data_model.constraints import CONSTRAINTS

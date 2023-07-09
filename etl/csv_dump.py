@@ -1,12 +1,24 @@
-from etl.utils import (
-    get_fields_for_source,
-    get_df_from_snowflake,
-    save_df_to_csv,
-    standardize_url,
-    standardize_city,
-    standardize_state,
-    standardize_country,
-)
+# set the path from repo root to src
+# import sys
+# sys.path.append('src')
+# set the repo root as the working directory
+import os
+os.chdir('/Users/victoriashi/GitHub/graph_ELT')
+
+from etl.data_model.nodes import NODES
+from data_model.relationships import RELATIONSHIPS
+from data_model.constraints import CONSTRAINTS
+from etl.utils import ingest_nodes, ingest_relationships, run_cypher_query
+
+
+for constraint in CONSTRAINTS:
+    run_cypher_query(constraint)
+
+for node in NODES:
+    ingest_nodes(node)
+
+for relationship in RELATIONSHIPS:
+    ingest_relationships(relationship)
 
 
 source = "ss_org"

@@ -2,5 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/PythonProjects/finm-data-analysis-2022" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/PythonProjects/finm-portfolio-2021" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/PythonProjects/finm-quant-2022" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/PythonProjects/finm-quant-2023" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/PythonProjects/graph_ELT" vcs="Git" />
   </component>
 </project>

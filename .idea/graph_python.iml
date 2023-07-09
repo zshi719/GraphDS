@@ -5,6 +5,5 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="data_model" />
-    <orderEntry type="module" module-name="elt" />
   </component>
 </module>
